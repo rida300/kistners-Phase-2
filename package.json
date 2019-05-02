@@ -1,0 +1,19 @@
+{
+  "name": "workspace",
+  "version": "1.0.0",
+  "description": "You will need to create a form by which an employee can create new arrangement designs. Designs should include a name, description, and an image. You should take advantage of the existing database.arrangements.create() method to commit the new arrangement to the database.This area will be used by the assessor to leave comments related to this criterion.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "express": "^4.16.4",
+    "express-ejs-layouts": "^2.5.0",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
+    "sqlite3": "^4.0.6"
+  }
+}
