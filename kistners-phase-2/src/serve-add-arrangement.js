@@ -1,7 +1,8 @@
 const db = require('../data/database');
 
 function serveAddArrangement(req, res) {
-    console.log("Serve update id = " + req.params.id);
+    console.log("Serve arrangement object = " + req.params);
+    console.log("Serve arrangement id = " + req.params.id);
     db.arrangements.find(req.params.id, (err, arrangement) => {
         console.log(req.params, err, arrangement)
         var nav = res.templates.render("_nav.html", {url: req.url});

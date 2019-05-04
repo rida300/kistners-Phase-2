@@ -9,7 +9,7 @@ function updateArrangement(req, res) {
     console.log("In update arrangement");
     console.log(req.params);
     parseBody(req, res, (req, res) => {
-        // Create arrangement 
+        // update arrangement 
         arrangements.update(req.body, (err) => {
             if(err) return serve500(req, res);
             serveAdmin(req, res);

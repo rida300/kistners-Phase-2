@@ -17,7 +17,7 @@ const serveAdmin = require('./src/serve-admin');
 
 const addArrangement = require('./src/add-arrangement');
 const serveAddArrangement = require('./src/serve-add-arrangement');
-const serveUpdateArrangement = require('./src/serve-update-arrangement');
+const serveUpdateArrangement = require('./src/serve-update-arrangement-display-list');
 const updateArrangementForm = require('./src/serve-update-arrangement-form');
 const updateArrangement = require('./src/update-arrangement');
 
@@ -51,16 +51,16 @@ router.addRoute("GET", "/arrangement-images/:id", serveArrangementImage);
 router.addRoute("GET", "/admin", serveAdmin);
 router.addRoute("GET", "/signup", serveSignup);//gets the form and publishes it for the admin
 router.addRoute("POST", "/signup", createUser);
-//wheen the admin submits this form (i.e: POSTs it), this route sends the info on the form to createUser
+//when the admin submits this form (i.e: POSTs it), this route sends the info on the form to createUser
 router.addRoute("GET", "/signin", serveSignin);
 router.addRoute("POST", "/signin", createSession);
-router.addRoute("GET", "/update-password", serveUpdatePassword);
-router.addRoute("POST", "/update-password", updatePassword);
 router.addRoute("POST", "/add-arrangement", addArrangement);
 router.addRoute("GET", "/add-arrangement", serveAddArrangement);
 router.addRoute("GET", "/update-arrangement", serveUpdateArrangement);
 router.addRoute("GET", "/update-arrangement-form/:id", updateArrangementForm);
 router.addRoute("POST", "/update-arrangement", updateArrangement);
+router.addRoute("GET", "/update-password", serveUpdatePassword);
+router.addRoute("POST", "/update-password", updatePassword);
 
 
 var server = http.createServer({}, (req, res) => {
