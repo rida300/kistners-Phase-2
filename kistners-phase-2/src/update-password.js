@@ -2,26 +2,30 @@ const bcrypt = require('bcrypt');
 const sessions = require('../lib/sessions');
 const templates = require('../lib/templates');
 const parseBody = require('../lib/parse-body');
-const database = require('../data/database')
-const db = database.db;
+const databaseFile = require('../data/database')
+const db = databaseFile.db;
 
-/** @function success 
- * Creates a session for the newly logged in user and 
- * redirects them to the home page.
- * @param {http.incomingMessage} req - the request object 
- * @param {http.serverResponse} res - the response object
- * @param {Object} user - the user this session belongs to 
- */
+const ENCRYPTION_PASSES = 10;
+
+function saveUser(req, res, user) {
+    //update password
+    db.run("UPDATE users SET cryptedPassword = ? WHERE username = ?",
+    user.cryptedPassword,
+    user.username,
+    (err) => {
+      if(err) failure(req, res, error);
+      else success(req, res, user);
+    }); 
+}
+
 function success(req, res, user) {
-  sessions.create(user, (err, sid) => {
-    if(err) return serve500(req, res, err);
-    // Set the cookie containing the SID
-    res.setHeader("Set-Cookie", `SID=${sid}; Secure`);
-    res.setHeader("Location", "/admin");
-    res.statusCode = 302;
-    res.end();
+  bcrypt.hash(user.password, ENCRYPTION_PASSES, (err, hash) => {
+    if(err) return failure(req, res);
+    user.cryptedPassword = hash;
+    saveUser(req, res, user);
   });
 }
+
 
 /** @function failure
  * Enpoint that renders the sign in form on a failure with an optional message.
@@ -31,7 +35,7 @@ function success(req, res, user) {
  */
 function failure(req, res, errorMessage) {
   if(!errorMessage) errorMessage = "There was an error processing your request.  Please try again."
-  var html = templates.render("signin.html", {errorMessage: errorMessage});
+  var html = res.templates.render("signin.html", {errorMessage: errorMessage});
   res.setHeader("Content-Type", "text/html");
   res.end(html);
 }
@@ -45,7 +49,7 @@ function failure(req, res, errorMessage) {
  * @param {object} user - the user object (with a cryptedPassoword property) 
  */
 function validatePassword(req, res, user) {
-  bcrypt.compare(req.body.password, user.cryptedPassword, (err, result) => {
+  bcrypt.compare(req.body.oldPassword, user.cryptedPassword, (err, result) => {
     if(result) success(req, res, user);
     else failure(req, res, "Username/password combination not found.  Please try again");
   });
@@ -76,7 +80,7 @@ function retrieveUser(req, res) {
  * @param {http.incomingMessage} req - the request object 
  * @param {http.serverResponse} res - the response object 
  */
-function createSession(req, res) {
+function updatePassword(req, res) {
   parseBody(req, res, (req, res) => {
     retrieveUser(req, res);
   });
@@ -87,4 +91,4 @@ function createSession(req, res) {
  * supplied sign in form values (in the request body) and redirects 
  * to the home page.
  */
-module.exports = createSession;
+module.exports = updatePassword;

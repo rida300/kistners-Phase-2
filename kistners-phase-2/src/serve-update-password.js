@@ -1,11 +1,10 @@
-function serveAdmin(req, res) {
-    //if session exists
+function serveUpdatePassword(req, res) {
   if (req.session) {
       var nav = res.templates.render("_nav.html", {url: req.url});
       var footer = res.templates.render("_footer.html", {});
-      var content = res.templates.render("admin.html", {});
+      var content = res.templates.render("update-password.html", {errorMessage: ""});
       var html = res.templates.render("_page.html", {
-        page: "Admin",
+        page: "Admin",//Update Password
         navigation: nav,
         content: content,
         footer: footer
@@ -13,7 +12,6 @@ function serveAdmin(req, res) {
       res.setHeader("Content-Type", "text/html");
       res.end(html);
     }
-    //session expired so sign in again
     else {
         res.statusCode = 302; // temporary redirect
         res.setHeader("Location", "/signin");
@@ -21,4 +19,4 @@ function serveAdmin(req, res) {
     }
 }
 
-module.exports = serveAdmin;
+module.exports = serveUpdatePassword;

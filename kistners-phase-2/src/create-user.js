@@ -94,7 +94,7 @@ function success(req, res, user) {
     // Set the cookie containing the SID
     res.setHeader("Set-Cookie", `SID=${sid}; Secure`);
     // Redirect to the home page 
-    res.setHeader("Location", "/");
+    res.setHeader("Location", "/admin");
     res.statusCode = 302;
     res.end();
   });
@@ -108,7 +108,7 @@ function success(req, res, user) {
  */
 function failure(req, res, errorMessage) {
   if(!errorMessage) errorMessage = "There was a problem creating your account. Please try again.";
-  const html = templates.render("signup.html", {errorMessage: errorMessage});
+  const html = res.templates.render("signup.html", {errorMessage: errorMessage});
   res.setHeader("Content-Type", "text/html");
   res.end(html);
 }

@@ -1,6 +1,15 @@
 var sqlite3 = require('sqlite3').verbose();
 var db = new sqlite3.Database('./data/flowers.db');
 
+//adding a users table to the database
+db.run(`CREATE TABLE IF NOT EXISTS users (
+          id INTEGER PRIMARY KEY,
+          username VARCHAR(75),
+          cryptedPassword VARCHAR(60),
+          role VARCHAR(10)
+        )`, (err) => {console.error(err);}
+);
+
 /** @typedef ArrangementData {Object}
  * @property {string} id
  * @property {string} name
@@ -9,6 +18,26 @@ var db = new sqlite3.Database('./data/flowers.db');
  */
 
 var arrangements = {}
+
+
+//gets all the arrangements from the database
+arrangements.getAll = function(callback) {
+    var sql = `SELECT arrangements.id, name, description,
+              GROUP_CONCAT(arrangements_photos.id) AS photo_ids
+              FROM arrangements LEFT JOIN arrangements_photos
+              ON arrangements.id = arrangements_photos.arrangement_id
+              GROUP BY arrangements.id;`;
+    db.all(sql, (err, rows) => {
+        if(err) return callback(err);
+        if(!rows) return callback("Not Found");
+        
+        rows.map(row => {
+            row.photo_ids = row.photo_ids ? row.photo_ids.split(",") : []
+        });
+        
+        return callback(false, rows);
+    });
+}
 
 /** @callback Images~featuredCallback
    * @param {Exception|string} err - the error (if any)
@@ -161,19 +190,6 @@ arrangementImages.find = function(id, callback) {
     callback(err, row);
   });
 }
-
-
-//adding a users table to the database
-db.run(`CREATE TABLE IF NOT EXISTS users (
-          id INTEGER PRIMARY KEY,
-          username VARCHAR(75),
-          cryptedPassword VARCHAR(60),
-          role VARCHAR(10)
-        )`, (err) => {console.error(err);}
-);
-
-
-
 
 module.exports = {
   arrangements,

@@ -1,16 +1,6 @@
 <h1>Update Arrangement</h1>
 
-<form method="POST" action="\update-arrangement">
-    <fieldset>
-        <label for="name">Arrangement Name:</label>
-        <input type="text" name="name" value="<%= name %>">
-
-        <label for="description">Arrangement Description:</label>
-        <input type="text" name="description" value="<%= description %>">
-
-        <label for="id">Arrangement ID:</label>
-        <input type="text" name="id" value="<%= id %>">
-  
-        <input type="submit" value="Update Arrangement">
-    </fieldset>
-</form>
+<h2>Choose the arrangement to update</h2>
+<div class="card-list">
+  <%= arrangements %>
+<div>
