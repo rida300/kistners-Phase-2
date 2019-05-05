@@ -1,7 +1,7 @@
 var sqlite3 = require('sqlite3').verbose();
 var db = new sqlite3.Database('./data/flowers.db');
 
-//adding a users table to the database
+//create users table
 db.run(`CREATE TABLE IF NOT EXISTS users (
           id INTEGER PRIMARY KEY,
           username VARCHAR(75),

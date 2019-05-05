@@ -20,6 +20,7 @@ module.exports = createUser;
  */
 function createUser(req, res) {
   parseBody(req, res, (req, res) => {
+      console.log(req.params);
     validateUser(req, res, req.body);
   });
 }
@@ -71,9 +72,10 @@ function createPasswordHash(req, res, user) {
  * @param {object} user - the user to validate
  */
 function saveUser(req, res, user) {
-  db.run("INSERT INTO users (username, cryptedPassword) VALUES (?, ?)",
+  db.run("INSERT INTO users (username, cryptedPassword, role) VALUES (?, ?, ?)",
     user.username,
     user.cryptedPassword,
+    user.role,
     (err) => {
       if(err) failure(req, res, error);
       else success(req, res, user);
