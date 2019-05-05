@@ -5,22 +5,32 @@ const parseBody = require('../lib/parse-body');
 const databaseFile = require('../data/database')
 const db = databaseFile.db;
 
-const ENCRYPTION_PASSES = 10;
+const ENCRYPTION_PASSES = 12;//10
 
 function saveUser(req, res, user) {
-    //update password
+    console.log("in save user");
     db.run("UPDATE users SET cryptedPassword = ? WHERE username = ?",
     user.cryptedPassword,
     user.username,
     (err) => {
       if(err) failure(req, res, error);
-      else success(req, res, user);
+      else {
+          // Redirect to the home page 
+          res.setHeader("Location", "/admin");
+          res.statusCode = 302;
+          res.end();
+      }
     }); 
 }
 
 function success(req, res, user) {
-  bcrypt.hash(user.password, ENCRYPTION_PASSES, (err, hash) => {
-    if(err) return failure(req, res);
+  console.log("in success");
+  console.log("new password = ", req.body.newPassword);
+  bcrypt.hash(req.body.newPassword, ENCRYPTION_PASSES, (err, hash) => {
+    if(err) {
+        console.log("error hashing password");
+        return failure(req, res);
+    } 
     user.cryptedPassword = hash;
     saveUser(req, res, user);
   });
@@ -34,6 +44,7 @@ function success(req, res, user) {
  * @param {string} errorMessage (optional) - an error message to display 
  */
 function failure(req, res, errorMessage) {
+  console.log("in failure");
   if(!errorMessage) errorMessage = "There was an error processing your request.  Please try again."
   var html = res.templates.render("signin.html", {errorMessage: errorMessage});
   res.setHeader("Content-Type", "text/html");
@@ -49,6 +60,13 @@ function failure(req, res, errorMessage) {
  * @param {object} user - the user object (with a cryptedPassoword property) 
  */
 function validatePassword(req, res, user) {
+  console.log("in validate password");
+  console.log("user = ", user);
+  console.log("username = ", user.username);
+  console.log("old password = ", user.oldPassword);
+  console.log("new password = ", user.newPassword);
+  console.log("password Confirmation = ", user.passwordConfirmation);
+  console.log("in update password function");
   bcrypt.compare(req.body.oldPassword, user.cryptedPassword, (err, result) => {
     if(result) success(req, res, user);
     else failure(req, res, "Username/password combination not found.  Please try again");
@@ -64,10 +82,14 @@ function validatePassword(req, res, user) {
  * @param {http.serverResponse} res - the response object 
  */
 function retrieveUser(req, res) {
+  console.log("in retrieve user");
   db.get("SELECT * FROM users WHERE username = ?",
     req.body.username,
     (err, user) => {
-      if(err) return failure(req, res); // SQL error
+      if(err) {
+          console.log("SQL error");
+          return failure(req, res); // SQL error
+      }
       if(!user) return failure(req, res, "Username/password combination not found.  Please try again");
       validatePassword(req, res, user);
     }
@@ -82,6 +104,7 @@ function retrieveUser(req, res) {
  */
 function updatePassword(req, res) {
   parseBody(req, res, (req, res) => {
+    console.log("finished parsing body");
     retrieveUser(req, res);
   });
 }

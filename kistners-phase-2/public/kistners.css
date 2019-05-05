@@ -158,6 +158,8 @@ footer > .contact {
     flex-direction: row;
     flex-wrap: nowrap;
     width: 100%;
+    
+    
 }
 
 .arrangements-list {
@@ -165,7 +167,7 @@ footer > .contact {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    width: 30%;
+    width: 30%; 
 }
 .arrangements-list > a {
     display: flex;
