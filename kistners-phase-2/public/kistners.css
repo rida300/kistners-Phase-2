@@ -149,10 +149,23 @@ footer > .contact {
         padding: 1rem;
     }
 }
-.arrangements-list {
+
+
+.home{}
+.home.arrangements-list {
+    
     display: flex;
     flex-direction: row;
+    flex-wrap: nowrap;
     width: 100%;
+}
+
+.arrangements-list {
+    
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 30%;
 }
 .arrangements-list > a {
     display: flex;
