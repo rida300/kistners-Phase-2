@@ -13,6 +13,7 @@ const serveWedding = require('./src/serve-wedding');
 const serveArrangement = require('./src/serve-arrangement');
 const serveArrangementImage = require('./src/serve-arrangement-image');
 const serve404 = require('./src/serve404');
+const serve403 = require('./src/serve403');
 const serveAdmin = require('./src/serve-admin');
 
 const addArrangement = require('./src/add-arrangement');

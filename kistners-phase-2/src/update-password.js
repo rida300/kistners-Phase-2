@@ -2,7 +2,9 @@ const bcrypt = require('bcrypt');
 const sessions = require('../lib/sessions');
 const templates = require('../lib/templates');
 const parseBody = require('../lib/parse-body');
-const databaseFile = require('../data/database')
+const databaseFile = require('../data/database');
+const serve403= require('../src/serve403');
+const serveSignin= require('../src/serve-signin');
 const db = databaseFile.db;
 
 const ENCRYPTION_PASSES = 12;//10
@@ -63,11 +65,14 @@ function validatePassword(req, res, user) {
   console.log("in validate password");
   console.log("user = ", user);
   console.log("username = ", user.username);
+  console.log("old password from req = ", req.body.oldPassword);
+  console.log("new password from req = ", req.body.newPassword);
   console.log("old password = ", user.oldPassword);
   console.log("new password = ", user.newPassword);
   console.log("password Confirmation = ", user.passwordConfirmation);
   console.log("in update password function");
   bcrypt.compare(req.body.oldPassword, user.cryptedPassword, (err, result) => {
+      console.log("err, result", err, result);
     if(result) success(req, res, user);
     else failure(req, res, "Username/password combination not found.  Please try again");
   });
@@ -105,9 +110,32 @@ function retrieveUser(req, res) {
 function updatePassword(req, res) {
   parseBody(req, res, (req, res) => {
     console.log("finished parsing body");
-    retrieveUser(req, res);
+    isAdmin(req, res);
   });
 }
+
+function isAdmin(req,res)
+{
+   
+        if(req.session)
+            {
+                if(req.user.role == db.ADMIN || req.user.username == req.body.username)
+                    {
+                        retrieveUser(req, res);
+                    }
+                else
+                    {
+                        console.log("You are not authorized to update this password");
+                        serve403(req,res); 
+                    }
+            }
+    else
+    {
+    console.log("Please sign in again:");
+    serveSignin(req,res); 
+    }
+    
+   }
 
 /** @module createSession 
  * An endpoint for a POST request that creates a new session for the 

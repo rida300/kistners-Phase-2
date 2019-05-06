@@ -1,6 +1,8 @@
 var sqlite3 = require('sqlite3').verbose();
 var db = new sqlite3.Database('./data/flowers.db');
 
+const ADMIN = "admin";
+
 //create users table
 db.run(`CREATE TABLE IF NOT EXISTS users (
           id INTEGER PRIMARY KEY,
@@ -194,5 +196,6 @@ arrangementImages.find = function(id, callback) {
 module.exports = {
   arrangements,
   arrangementImages,
-  db
+  db,
+  ADMIN
 }
