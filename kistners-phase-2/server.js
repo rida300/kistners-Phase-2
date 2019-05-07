@@ -27,8 +27,12 @@ const serveSignin = require('./src/serve-signin');
 const createUser = require('./src/create-user');
 const createSession = require('./src/create-session');
 const loadSession = require('./lib/load-session');
+//update password: users
 const serveUpdatePassword = require('./src/serve-update-password');
 const updatePassword = require('./src/update-password');
+//update password: admins
+const serveUpdatePasswordAdmin = require('./src/serve-update-password-admin');
+const updatePasswordAdmin = require('./src/update-password-admin');
 
 const PORT = 3000;
 
@@ -62,6 +66,9 @@ router.addRoute("GET", "/update-arrangement-form/:id", updateArrangementForm);
 router.addRoute("POST", "/update-arrangement", updateArrangement);
 router.addRoute("GET", "/update-password", serveUpdatePassword);
 router.addRoute("POST", "/update-password", updatePassword);
+
+router.addRoute("GET", "/update-password-admin", serveUpdatePasswordAdmin);
+router.addRoute("POST", "/update-password-admin", updatePasswordAdmin);
 
 
 var server = http.createServer({}, (req, res) => {

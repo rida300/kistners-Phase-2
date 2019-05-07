@@ -71,11 +71,9 @@ function validatePassword(req, res, user) {
   console.log("new password = ", user.newPassword);
   console.log("password Confirmation = ", user.passwordConfirmation);
   console.log("in update password function");
-  bcrypt.compare(req.body.oldPassword, user.cryptedPassword, (err, result) => {
-      console.log("err, result", err, result);
-    if(result) success(req, res, user);
-    else failure(req, res, "Username/password combination not found.  Please try again");
-  });
+  if(req.body.newPassword == req.body.passwordConfirmation) success(req, res, user);
+  else failure(req, res, "Password and Password confirmation do not match.  Please try again");
+  
 }
 
 
@@ -108,23 +106,22 @@ function retrieveUser(req, res) {
  * @param {http.incomingMessage} req - the request object 
  * @param {http.serverResponse} res - the response object 
  */
-function updatePassword(req, res) {
+function updatePasswordAdmin(req, res) {
   parseBody(req, res, (req, res) => {
     console.log("finished parsing body");
     console.log("in update password, contents of the req object : "+ req);
     //console.log("in update password, contents of the req object params: "+ req.params);
-    isUser(req, res);
+    isAdmin(req, res);
   });
 }
 
-function isUser(req,res)
+function isAdmin(req,res)
 {
-   //console.log("Role while entering isUser" + req.session.user)
+   
         if(req.session)
             {
                 console.log("req.user.role" + req.user.role);
-                //if(req.user.role == db.USER || req.user.username == req.body.username)
-                if(req.user.username == req.body.username)
+                if(req.user.role == databaseFile.roles.ADMIN)
                     {
                         retrieveUser(req, res);
                     }
@@ -149,4 +146,4 @@ function isUser(req,res)
  * supplied sign in form values (in the request body) and redirects 
  * to the home page.
  */
-module.exports = updatePassword;
+module.exports = updatePasswordAdmin;

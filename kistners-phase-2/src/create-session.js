@@ -1,9 +1,9 @@
 const bcrypt = require('bcrypt');
 const sessions = require('../lib/sessions');
-const templates = require('../lib/templates');
 const parseBody = require('../lib/parse-body');
 const database = require('../data/database')
 const db = database.db;
+
 
 /** @function success 
  * Creates a session for the newly logged in user and 
@@ -31,7 +31,7 @@ function success(req, res, user) {
  */
 function failure(req, res, errorMessage) {
   if(!errorMessage) errorMessage = "There was an error processing your request.  Please try again."
-  var html = templates.render("signin.html", {errorMessage: errorMessage});
+  var html = res.templates.render("signin.html", {errorMessage: errorMessage});
   res.setHeader("Content-Type", "text/html");
   res.end(html);
 }
