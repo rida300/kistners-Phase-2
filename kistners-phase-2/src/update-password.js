@@ -88,6 +88,7 @@ function validatePassword(req, res, user) {
  */
 function retrieveUser(req, res) {
   console.log("in retrieve user");
+  console.log("req.sessions.user"+ req.session.user);
   db.get("SELECT * FROM users WHERE username = ?",
     req.body.username,
     (err, user) => {
@@ -110,6 +111,8 @@ function retrieveUser(req, res) {
 function updatePassword(req, res) {
   parseBody(req, res, (req, res) => {
     console.log("finished parsing body");
+    console.log("in update password, contents of the req object : "+ req);
+    //console.log("in update password, contents of the req object params: "+ req.params);
     isAdmin(req, res);
   });
 }
@@ -119,15 +122,18 @@ function isAdmin(req,res)
    
         if(req.session)
             {
-                if(req.user.role == db.ADMIN || req.user.username == req.body.username)
+                console.log("req.user.role" + req.user.role);
+                if(req.user.role == db.USER || req.user.username == req.body.username)
                     {
                         retrieveUser(req, res);
                     }
+                
                 else
                     {
                         console.log("You are not authorized to update this password");
                         serve403(req,res); 
                     }
+                   
             }
     else
     {

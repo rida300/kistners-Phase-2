@@ -1,7 +1,8 @@
 var sqlite3 = require('sqlite3').verbose();
 var db = new sqlite3.Database('./data/flowers.db');
 
-const ADMIN = "admin";
+const ADMIN = "Admin";
+const USER = "user";
 
 //create users table
 db.run(`CREATE TABLE IF NOT EXISTS users (
@@ -197,5 +198,6 @@ module.exports = {
   arrangements,
   arrangementImages,
   db,
-  ADMIN
+  ADMIN,
+  USER
 }
