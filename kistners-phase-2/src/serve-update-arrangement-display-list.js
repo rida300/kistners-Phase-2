@@ -1,8 +1,12 @@
 const serve500 = require('./serve500');
-const db = require('../data/database');
+const databaseFile = require('../data/database');
+const db = databaseFile.db;
 
 function serveUpdateArrangementDisplayList(req, res) {
-  db.arrangements.getAll((err, arrangements) => {
+    if (req.session) {
+    
+    if(req.user.role==databaseFile.roles.ADMIN || req.user.role==databaseFile.roles.USER) { 
+  databaseFile.arrangements.getAll((err, arrangements) => {
     if(err) {
       console.log(`Could not retrieve arrangements: ${err}`);
       serve500(req, res);
@@ -21,6 +25,18 @@ function serveUpdateArrangementDisplayList(req, res) {
     res.setHeader("Content-Type", "text/html");
     res.end(html);
   });
+}
+    else{
+        serve403(req,res);
+        res.end();
+    }  
+    
+      
+  }else {
+        res.statusCode = 302; // temporary redirect
+        res.setHeader("Location", "/signin");
+        res.end()
+  }
 }
 
 module.exports = serveUpdateArrangementDisplayList;
