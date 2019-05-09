@@ -1,6 +1,6 @@
 const databaseFile = require('../data/database');
 const db = databaseFile.db;
-
+const serve403 = require('./serve403');
 
 function serveUpdatePasswordAdmin(req, res) {
   if (req.session) {
@@ -20,7 +20,13 @@ function serveUpdatePasswordAdmin(req, res) {
       res.setHeader("Content-Type", "text/html");
       res.end(html);
     }
-  } else {
+    else{
+        serve403(req,res);
+        res.end();
+    }  
+    
+      
+  }else {
         res.statusCode = 302; // temporary redirect
         res.setHeader("Location", "/signin");
         res.end()

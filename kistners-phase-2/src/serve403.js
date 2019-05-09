@@ -10,7 +10,7 @@ function serve403(req, res) {
   res.statusCode = 403;
   res.statusMessage = "Not Found";
   // Render a pretty error page
-  var html = res.templates.render('404.html',{});
+  var html = res.templates.render('403.html',{});
   res.setHeader("Content-Type", "text/html");
   res.end(html);
 }
